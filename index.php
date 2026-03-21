@@ -1,4 +1,4 @@
-<?php $name = "Gustav"; ?>
+<?php $name = "Gustav Bjorelius"; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,9 +7,14 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <nav>
+  <a href="/">Home</a>
+  <a href="/about.php">About</a>
+  <a href="/hell.php">Hell</a>
+</nav>
   <h1><?php echo $name; ?></h1>
   <p>Developer. Builder. Work in progress.</p>
-  <button id="btn">Click me</button>
+  <button id="btn">This is a button</button>
   <script src="script.js"></script>
 </body>
 </html>

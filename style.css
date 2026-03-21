@@ -7,7 +7,21 @@ html, body {
 }
 
 button {
-    margin-top: 20px;
+    margin-top: 200px;
     padding: 8px 16px;
     cursor: pointer;
+}
+
+nav {
+    margin-bottom: 40px;
+}
+
+nav a {
+    color: #f0f0f0;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+nav a:hover {
+    text-decoration: underline;
 }
