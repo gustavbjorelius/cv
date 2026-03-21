@@ -1,8 +1,8 @@
-body {
+html, body {
     font-family: monospace;
     max-width: 600px;
     margin: 80px;
-    background; #0f0f0f;
+    background: #0f0f0f;
     color: #f0f0f0;
 }
 
