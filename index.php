@@ -10,11 +10,11 @@
   <nav>
   <a href="/">Home</a>
   <a href="/about.php">About</a>
-  <a href="/hell.php">Hell</a>
+  <a href="/kpis-toward-excellence.php">KPIs</a>
 </nav>
   <h1><?php echo $name; ?></h1>
   <p>Developer. Builder. Work in progress.</p>
-  <button id="btn">This is a button</button>
+  <button id="btn">Don't press this button.</button>
   <script src="script.js"></script>
 </body>
 </html>

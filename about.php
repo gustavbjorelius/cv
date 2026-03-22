@@ -10,6 +10,7 @@
   <nav>
     <a href="/">home</a>
     <a href="/about.php">About</a>
+    <a href="/kpis-toward-excellence.php">KPIs</a>
   </nav>
   <h1>About</h1>
   <p>Building things. Learning in public. Based in Stockholm.</p>
