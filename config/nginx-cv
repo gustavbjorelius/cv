@@ -1,0 +1,10 @@
+server {
+	listen 80;
+	root /home/gustav/cv;
+	index index.php;
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php-fpm.sock;
+	}
+}
