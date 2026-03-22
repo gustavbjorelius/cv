@@ -25,3 +25,29 @@ nav a {
 nav a:hover {
     text-decoration: underline;
 }
+
+.tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-wrapper::after {
+    content: "Don't do it. You'll regret it.";
+    position: absolute;
+    bottom: -130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #f0f0f0;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.1s;
+    pointer-events: none;
+}
+
+.tooltip-wrapper:hover::after {
+    opacity: 1;
+}
