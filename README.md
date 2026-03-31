@@ -1,3 +1,86 @@
+-BEGIN-31-Mar----------------------------------------------------------------------
+
+GOAL: put files in the right place, learn it the right way from the getgo 
+GOAL: make site run on banhof
+
+there is a develop environment and a production environment
+         - in your development env, you write and test (https://localhost)
+         - in your production env, your files are
+
+reload ngnix when .conf file, if you edit .php, .js, .html, .css files
+
+I need two config files for nginx
+ 1. for local (dev)
+ 2. for production env (the server - banhof in this case)
+
+
+file structure
+
+ /var/www/gustavbjorelius_dev/nginx-conf/ 
+  ^ this is ?
+ /etc/nginx/nginx.conf 
+  ^ this is the top level config over all domains 
+ /etc/php/8.x/fpm/pool.d/www.conf
+  ^ adjust user perms and mem limits 
+  ^ Q: what and why are these?
+ /etc/php/8.x/fpm/php.ini
+  ^ PHP Configuration 
+ /etc/nginx/sites-enabled
+  ^ symlinks made from ln /etc/nginx/sites-available /etc/nginx/sites-enabled
+ /run/php/php8.x-fpm.sock
+  ^ path nginx will 'talk' to
+  ^ since Nginx doesn't have naitive comms w php, it must send files to PHP-FPM
+  ^ replace x with the correct version
+
+
+QUESTIONS 
+ - what are php pool configs and when do I need to care about them?
+
+
+
+-END-31-Mar------------------------------------------------------------------------
+
+
+remove the cloudflared tunnel from wls2
+ - cloudflared status cloudflared
+ - sudo systemctl stop cloudflared 
+ - sudo systemctl disable cloudflared 
+
+now, if you named your file something like github_ssh_key, you'll need to use 
+
+~/.ssh/config 
+ - if you named your ssh key file something instead of nothing, github needs to \
+ - know this else, it will not be able to ask for the right key from what yo 
+ - sooo
+ - go into your .ssh/config file 
+ - chmod 600 ~/.ssh/{your private key} or else github might think key is a slut \
+ - and choose to not do business with you :<
+
+and also it might need a nudge 
+
+finally, ssh-add ~/.ssh/git
+
+get the cv into banhof debian 
+ - git clone git@github.com:gustavbjorelius/cv.git
+ -- get this on cv page
+ -- creates brand new folder wherever you run it
+ -- download everytninb from the repo 
+ -- connects to github account 
+ -- once you run this command successfully, github will send you a ssh fingerprint
+ -- and you SHOULD match this against githubs official ssh ed25519 fingerprint
+ -- google it!
+
+connect banhof debian to git 
+ - ssh-keygen -t ed25519 -C "yo@gustavbjorelius.dev"
+ -- ssh-keygen == command that can do lots of stuff with ssh
+ -- -t ed25519 == type 
+ -- -C == comment, imagine sticky note 
+ -- "{your github mail}
+ -- generate a password and save in bitwarden 
+ -- then get the pub key by 
+ -- cat ~/.ssh/github_ssh_key.pub
+ -- and put it in ssh keys in your github 
+
 ssh into the banhof
  - ssh debian13@158.174.210.44 {enter}
  - <the terminal will tell you 'this is the public key'> 
@@ -30,9 +113,13 @@ pass (cli tool wls2)
 
 cloudflare 
  - to serve the site
- - bypass cashing for everything
- - auto HTTPS and SSL 
- - Cloudflared Tunnel 
+ - bypass cashing for everything? 
+ - auto HTTPS and SSL - don't need to install certificates!
+ - cloudflared Tunnel
+  - no need for open ports https:443 or http:80
+  - no need to manage certificates 
+  - talks to nginx on port 80 INTERNALLY so no external evesropping 
+  - point the cloudflared tunnel to local nginx (https://localhost:80)
  - as my wls2 debian was initially the server,
  - now banhof (stable IP) instead of my dynamic one? 
  - do we need a cloudflare tunnel now with banhof> 
@@ -90,7 +177,7 @@ No abstractions  if I built it, I understand it.
 - Cloudflare Tunnel  exposes local server to internet without open ports, SSL automatic
 - Debian  OS, no abstractions
 - git + GitHub  version control, IaC, backup
-- vi, tmux  terminal tools
+- vi, tmux  terminal tools 
 
 ## Setup on a new machine
 1. Clone this repo
@@ -105,7 +192,7 @@ No abstractions  if I built it, I understand it.
 ## TODOs
 - [ ] setup.sh to automate all setup steps
 - [ ] KPI page with green squares
-- [ ] Responsive mobile layout
+- [ ] let the page render from left to right so it works and 
 - [ ] Blog page
 - [ ] Save nginx config to repo under config/
 
