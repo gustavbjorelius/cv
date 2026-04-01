@@ -1,45 +1,100 @@
+-BEGIN-1-April---------------------------------------------------------------------
+GOAL: Get the site running at Banhof VPS while not cutting sysadmin corners. 
+
+system definition +=
+ I want to set this up as if I had multiple sites so it's a bit future-proofed
+ Website n+1 shouldn't be more of a problem than the first one 
+ Logfiles are managed with logrotate in /etc/logrotate so they don't fill up disk
+
+Where we are now
+ SSH Banhof access OK. Nothing installed on it. 
+
+~/cv/config/nginx.dev.conf
+ config 
+
+~/cv/config/nginx.prod.conf
+ 
+
 -BEGIN-31-Mar----------------------------------------------------------------------
 
 GOAL: put files in the right place, learn it the right way from the getgo 
 GOAL: make site run on banhof
 
-there is a develop environment and a production environment
-         - in your development env, you write and test (https://localhost)
-         - in your production env, your files are
-
-reload ngnix when .conf file, if you edit .php, .js, .html, .css files
-
-I need two config files for nginx
- 1. for local (dev)
- 2. for production env (the server - banhof in this case)
-
-
-file structure
+-- RELEVANT FILE STRUCTURE -- 
 
  /var/www/gustavbjorelius_dev/nginx-conf/ 
-  ^ this is ?
+  This is ?
+
  /etc/nginx/nginx.conf 
-  ^ this is the top level config over all domains 
- /etc/php/8.x/fpm/pool.d/www.conf
-  ^ adjust user perms and mem limits 
-  ^ Q: what and why are these?
- /etc/php/8.x/fpm/php.ini
-  ^ PHP Configuration 
+  Think: BRAIN
+  This is the top level config over all domains. Rarely touch this. Log formats \
+   gzip, connection limits. 
+  Simpler as Cloudflared Tunnel is used. No SSL Certs. Though, important, it must \
+   listen to port 80. This happens in the server block
+  Configure it to only accept trafic from Cloudflare, so bypassing Cloudflare. 
+
+ /etc/nginx/sites-available
+  Think: LIBRARY
+
  /etc/nginx/sites-enabled
-  ^ symlinks made from ln /etc/nginx/sites-available /etc/nginx/sites-enabled
+  Symlinks made from ln /etc/nginx/sites-available /etc/nginx/sites-enabled
+
+ /etc/php/8.x/fpm/pool.d/www.conf
+  Adjust user perms and mem limits 
+  Q: what and why are these?
+
+ /etc/php/8.x/fpm/php.ini
+  PHP Configuration 
+
  /run/php/php8.x-fpm.sock
-  ^ path nginx will 'talk' to
-  ^ since Nginx doesn't have naitive comms w php, it must send files to PHP-FPM
-  ^ replace x with the correct version
+  Path nginx will 'talk' to
+  Since Nginx doesn't have naitive comms w php, it must send files to PHP-FPM
+  Replace x with the correct version
+
+ /var/log/nginx/access.log
+  You see every single visitor and their IP 
+  tail -f /path/to/log | grep -E "error" 
+  grep -E "error|keyWords" /path/to/log
+  less /path/to/log
+   vi like movements and search 
+
+ /var/log/nginx/error.log
+
+ /var/log/php8.x-fpm.log
 
 
-QUESTIONS 
- - what are php pool configs and when do I need to care about them?
+-- NOTES -- 
+FastCGI 
+ Needs to be included in nginx config. Parameters: 
 
+There is a develop environment and a production environment
+ In your development env, you write and test (https://localhost)
+ In your production env, your files are served
 
+Reload ngnix when .conf file, if you edit .php, .js, .html, .css files
+
+Since I am hosting a website on a cloud debian, and I want to learn the right \
+habits from the getgo, I should develop in one place (wsl2) and host in another. 
+ I need two config files for nginx
+  For local (dev)
+  For production env (the server - banhof in this case)
+
+-- QUESTIONS AND ANSWERS --
+ Q: Should I keep my production in ~ on my WSL2 then push to git to then in Banhof \
+  and while in the Banhof VPS, git pull? A: 
+ Q: SSL TERMINATION happens at the Cloudflare edge? Does it mean that its a success?\
+  A: Termination = decryption. 
+ Q: What are php pool configs and when do I need to care about them?
+ Q: Service directory? A: In the context of nginx and logrotate, you'd have \
+  /etc/logrotate.d/{service1|service2|...}. Each file provides a config to each \
+  service. 
+ Q: Where should my git folder be? related to using symlink s
+ Q: What are server blocks?
+ Q: What is a server_name directive in nginx? 
+ Q: What does it mean when you have something.d? A: Dot files. In linux you have \
+  many small config files instead of one giant file. e.g. conf.d/{nginx|mysql|...}
 
 -END-31-Mar------------------------------------------------------------------------
-
 
 remove the cloudflared tunnel from wls2
  - cloudflared status cloudflared

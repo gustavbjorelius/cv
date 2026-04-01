@@ -19,11 +19,20 @@ WEB_ROOT="/var/www/cv"
 CONFIG_DIR="/etc/cv" 
 # ^ Standard location for app configs/secrets
 
-NGIGX_SITE="/etc/nginx/sites-sites-available/cv"
+NGINX_SITE="/etc/nginx/sites-available/cv"
 # ^ Where nginx looks for site configs
 
+apt-get update 
+# ^ apt-get == CLI tool for the APT package manager 
+# ^ APT == remote server and we are updating our cashe of available pkgs and versio
+# ^ update == downloads a list of available package + versions 
+# ^ update !== upGRADE == upGRADES existing (installed) packages
+# ^ important so when we run the command below (apt-get install) we DON'T 
+# ^ install old packages
 
-
+apt-get install -y nginx php-fpm php-curl
+# ^ install these packages
+# ^ -y == Just Do It (TM) 
 
 echo "=== Deploying to FHS Standard Paths"
 # ^ Prints a status message to the user 
@@ -104,18 +113,6 @@ ln -sf $NGINX_SITE /etc/nginx/sites-enabled/cv
 rm -f /etc/nginx/sites-enabled/default
 # ^ delete this SYMLINK else nginx might render the wrong page 
 # ^ -f == no error if it doesn't exist
-
-apt-get update 
-# ^ apt-get == CLI tool for the APT package manager 
-# ^ APT == remote server and we are updating our cashe of available pkgs and versio
-# ^ update == downloads a list of available package + versions 
-# ^ update !== upGRADE == upGRADES existing (installed) packages
-# ^ important so when we run the command below (apt-get install) we DON'T 
-# ^ install old packages
-
-apt-get install -y nginx php-fpm php-curl
-# ^ install these packages
-# ^ -y == Just Do It (TM) 
 
 systemctl restart php*-fpm
 # ^ systemctl interacts with systemd
