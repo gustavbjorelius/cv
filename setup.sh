@@ -94,7 +94,7 @@ chmod 700 $CONFIG_DIR
 # ^ meaning, a pwner would NOT be able to get my secrets - 
 # ^ they would be restricted (or 'jailed') to www-data perms
 
-cp config/nginx-cv.conf $NGINX_SITE
+cp config/nginx-cv.prod.conf $NGINX_SITE
 # ^ edit files here + they are symlinked to 'sites-enabled' + 
 # ^ ngnix -t && systemctl restart nginx
 # ^ these changes are reflected instantly online 
