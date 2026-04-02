@@ -1,3 +1,38 @@
+
+-BEGIN-2-apr----------------------------------------------------------------------
+
+UPGRADED WORKFLOW
+  Impulse to add something -> Issue 
+  Session start -> git status + git log + pick an issue
+  Working -> frequent small commits referencing the issue
+  Session end -> push 
+  Week start -> triage 
+  Make another milestone -: 
+
+New commands to put into my habit 
+  git log --oneline -> what did I do yesterday? 
+  git diff ?
+  git status -> where did I leave off?
+  gh api repos/gustavbjorelius/cv/milestones \
+   -f title="Site on Banhof" \ # this could be short as it will be referenced later
+   -f description="Get site running on Banhof without cutting sysadmin corners"
+  gh issue create 
+  gh issue list 
+  gh issue close 12
+  gh issue edit 4 --milestone "The Name of The Milestone"
+  git commit -m "fix: missing semicolon in arch detection, closes #2"
+    this AUTOMATICALLY closes issue #2
+
+Instead of using vauge TODOs in arbitrary places in projects, im very excited to say that I've learned to use gh issues and milestones. This will help organize the work moving forward a lot better than the existing modus. Git will be used properly from now on - focus on one issue. And then, to move forward on the issues, I'll do SMALL commits 
+
+threat analysis for banhof done 
+the foundation of threat analysis is 
+
+Today I learned/decided:
+- Github commits should be done every time you added /italic/ONE THING/italic/
+- I'll definitaly use gh issues from now on to have ONE PLACE for TODOs. 
+- And I'll begin using git add FILE and git commit -m "add: one liner" then 
+
 -BEGIN-1-April---------------------------------------------------------------------
 GOAL: Get the site running at Banhof VPS while not cutting sysadmin corners. 
 
@@ -161,7 +196,7 @@ ssh into the banhof
  - enter passphrase for ssh to decrypt your private ssh 
  - and you're IN! 
 
-pass (cli tool wls2)
+pass (cli tool on wls2)
  - PAT github "cv-kpi-page" : read:user : no expiration
  - PAT "wls2 library fix" : entire repo : expires
  - ~/.password-store/cv 
@@ -239,18 +274,19 @@ No abstractions  if I built it, I understand it.
 2. Install nginx and PHP: `sudo apt install nginx php-fpm -y`
 3. Install cloudflared: `sudo dpkg -i cloudflared.deb`
 4. Authenticate: `cloudflared tunnel login`
-5. Copy nginx config: `sudo cp config/nginx-cv /etc/nginx/sites-available/cv`
+5. Copy nginx config: `sudo cp config/nginx-cv.prod.conf /etc/nginx/sites-available/cv`
 6. Enable site: `sudo ln -s /etc/nginx/sites-available/cv /etc/nginx/sites-enabled/`
 7. Install tunnel as service: `sudo cloudflared --config ~/.cloudflared/config.yml service install`
 8. Start everything: `sudo systemctl start nginx cloudflared`
 
-## TODOs
-- [ ] setup.sh to automate all setup steps
-- [ ] KPI page with green squares
-- [ ] let the page render from left to right so it works and 
-- [ ] Blog page
-- [ ] Save nginx config to repo under config/
-
 ## Why Cloudflare Tunnel
 Laptop moves between networks. Tunnel means no fixed IP, no open ports,
 SSL handled automatically by Cloudflare.
+
+## TODOs
+- [ ] let the page render from left to right so it works and 
+- [ ] Blog page?
+- [?] KPI page with green squares
+- [x] setup.sh to automate all setup steps
+- [x] Save nginx config to repo under config/
+

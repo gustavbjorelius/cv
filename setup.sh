@@ -114,6 +114,51 @@ rm -f /etc/nginx/sites-enabled/default
 # ^ delete this SYMLINK else nginx might render the wrong page 
 # ^ -f == no error if it doesn't exist
 
+echo "=== Installing Cloudflare Tunnel"
+# ^ Q: Why should this be here and not anywhere else in the script? Why before \
+# ^ nginx start? A: Because this is what nginx will use to communicate with \
+# ^ cloudflare - through the fucking tunnel. Good idea to install it before \
+# ^ trying to initiate contact. 
+
+ARCH=$(uname -m)
+if [ "$ARCH" = "x86_64" ]; then
+    CLOUDFLARED_ARCH="amd64"
+elif [ "$ARCH" = "aarch64" ]; then
+    CLOUDFLARED_ARCH="arm64"
+else
+    echo "Unsupported architecture: $ARCH. Run uname -m to identify, then include this in the logic of the setup script. Thank you."
+    exit 1
+    # this is the critial part of the setup script; it fails here if the above \
+    # logic doesn't include the existing 
+fi
+
+curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$CLOUDFLARED_ARCH.deb -o /tmp/cloudflared.deb
+# ^ Q: Check correct version? A: run uname -m on server if x86_64 == amd64 : True\
+# ^ then this is the right version. 
+# ^ /tmp in trixie == tmpfs == RAM, but is limited to 50% of RAM (default)
+# ^ /tmp is VERY FAST in trixie, compared to bookworm :3
+# ^ /tmp is automatically deleted after 10 days
+# ^ /tmp conf in /usr/lib/tempfiles.d/tmp.conf
+# ^ df -h /tmp == how much RAM is eaten? 
+# ^ if /tmp is too small, use /var/tmp 
+# ^ in THIS case, we know that 
+# ^ -L == follow redirects 
+# ^ -o == output file path 
+
+dpkg -i /tmp/cloudflared.deb
+# ^ dpkg == low level debian package manager
+# ^ -i == INSTALL
+# ^ apt-get handles dependencies, dpkg installs directly, if it fails, fix it by \
+# ^ running sudo apt install -f right after failure
+# ^ dpkg is low level, does not handle deps, it can only work with local .deb 
+# ^ if there is a missing dep, it will only warn
+# ^ it does not have internet access, as compared to apt-get and apt 
+# ^ dpkg lets you exclude files in installation by --path-exclude, keeping your \
+# ^ system lean 
+
+rm /tmp/cloudflared.deb
+# ^ we've installed, now free the RAM (very important in trixie)
+
 systemctl restart php*-fpm
 # ^ systemctl interacts with systemd
 # ^ systemd == INIT system of daemons and services; nginx being one of them
@@ -135,5 +180,42 @@ echo "Done. Site lives at: $WEB_ROOT"
 
 echo "Put your token in: $CONFIG_DIR/github-token"
 # ^ Manually by user for opsec; the script shouldn't know the secret
-# ^ we don't use a secrets manager as it's overkill for now
-# ^ 
+# ^ we don't use a secrets manager as it's overkill for now on the SERVER, while \
+# ^ a using pass in the dev env is NOT overkill
+# ^ Threat model: to answer the question, who can get to this file, and how? \ 
+# ^ SSHing in, they need my private key, and passphrase == bigger problem than \
+# ^ the PAT. Someone exploiting nginx/PHP->they'd run as www-data, which has 0 \
+# ^ perms in /etc/cv (chmod 700 == root ownership). Banhof got physical access \
+# ^ and I trust them. The token is protected by two layers: ssh + file perms. To \
+# ^ to get via ssh the pass is necessaty, to change the file params (from www-data\# ^ you need the root password.  
+# ^ so a server is different from a laptop, in that a laptop moves around through\
+# ^ different networks, the laptop also got windows underneath where any program\ 
+# ^ Since any windows program can see the files in wsl2, there is a reason to have\
+# ^ it encrypted with pgp.
+# ^ an attacker needs to penetrate both. To get the 
+
+echo ""
+echo "=== Manual steps necessary for Cloudflare Tunnel ==="
+echo "Run these in order, after script finished:"
+echo ""
+echo " 1. cloudflared tunnel login" 
+echo "    (this opens browser, auth w cloudflare in BROWSER)"
+echo ""
+echo " 2. cloudflared tunnel create cv"
+echo "    (note the tunnel ID you get)"
+echo ""
+echo " 3. Create ~/.cloudflared/config.yml with:"
+echo "    tunnel: cv"
+echo "    credentials-file: /home/debian13/.cloudflared/<tunnel-id>.json"
+echo "    ingress:"
+echo "     - hostname: gustavbjorelius.dev"
+echo "       service: http://localhost:80"
+# cloudflare talks to nginx via http inside the tunnel
+# we reach out to cloudflare with a tunnel, then cloudflare talks to us through it
+# nginx does not manage SSL - cloudflare handles that for us
+echo "     - service: http_status:404"
+echo ""
+echo " 4. cloudflared tunnel route dns cv gustavbjorelius.dev"
+echo ""
+echo " 5. sudo cloudflared --config ~/.cloudflared/config.yml service install"
+echo " 6. sudo systemctl start cloudflared"
