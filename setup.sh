@@ -44,7 +44,12 @@ echo "=== Deploying to FHS Standard Paths"
 mkdir -p $WEB_ROOT
 # ^ -p == no error if path extant + create nesessary parent dir 
 
-cp -r ~/cv/public/. $WEB_ROOT/
+cp -r /home/$SUDO_USER/cv/public/. $WEB_ROOT
+# $SUDO_USER is whoever initiated sudo, so this works on other machines
+# $SUDO_USER is a built-in variable 
+
+# cp -r ~/cv/public/. $WEB_ROOT/
+# This procuced error as this script runs as root, there is no /root/cv/public
 # separation of concern - what is in the public dir is what can go online, the \
 # other files in the cv dir like README and setup.sh stays out
 # Something I don't understand is the flow chart between this and sites-available
