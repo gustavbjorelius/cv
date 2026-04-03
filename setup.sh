@@ -9,10 +9,6 @@ set -e
 
 
 
-# These are path variables. 
-# They will be defined once and reused throughout the script. 
-# Simpler to change them in ONE PLACE rather then many. 
-
 WEB_ROOT="/var/www/cv" 
 # ^ Standard Linux location for web-served files 
 
@@ -24,6 +20,13 @@ NGINX_SITE="/etc/nginx/sites-available/cv"
 
 LOG_FILE="/etc/logrotate.d/cv" 
 # ^ config file for logrotate 
+ 
+PHP_VERSION=$(php --version | awk 'NR==1{print $2}' | cut -d'.' -f1,2)
+# ^ since phpx.x installs in different paths, we'll have to identify what version \
+# ^ we got from apt-get intstall php, future-proofing it this way 
+# ^ if we use a substutution >1, then define it in the top in the script
+# ^ this is currently only used in 2 places in 
+
 
 
 apt-get update 
@@ -122,6 +125,12 @@ cp config/nginx-cv.prod.conf $NGINX_SITE
 # ^ for nginx, 'sites-available' is the 'private' dir 
 # ^ from this dir, you can yeasily link sites to -> 
 
+if ! grep -q "php$PHP_VERSION" $NGINX_SITE; then
+    echo "WARNING: nginx config may have the wrong PHP version. Expected php$PHP_VERSION"
+fi
+# ^ insert comment here when I'm less tired 
+# ^ I RLY want to get this online tonight on banhof
+
 ln -sf $NGINX_SITE /etc/nginx/sites-enabled/cv
 # ^ -> this folder
 # ^ nginx LOAD what is in this folder - create/delete symlinks = 
@@ -199,7 +208,7 @@ cat > $LOG_FILE << ILOVEME
     notifempty
      # if the logs are empty, no need to rotate/MANAGE them as defined here
 }
-/var/log/php8.2-fpm.log {
+/var/log/php$PHP_VERSION-fpm.log {
     daily
     rotate 7 
     compress
