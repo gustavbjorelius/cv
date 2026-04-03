@@ -54,7 +54,7 @@ Today I learned/decided:
 - And I'll begin using git add FILE and git commit -m "add: one liner" then 
 
 -BEGIN-1-April---------------------------------------------------------------------
-GOAL: Get the site running at Banhof VPS while not cutting sysadmin corners. 
+GOAL: Get the site running at Banhof VPS while not cutting sysadmin corners. COMPLETED!!!!!
 
 system definition +=
  I want to set this up as if I had multiple sites so it's a bit future-proofed
@@ -73,7 +73,7 @@ Where we are now
 -BEGIN-31-Mar----------------------------------------------------------------------
 
 GOAL: put files in the right place, learn it the right way from the getgo 
-GOAL: make site run on banhof
+GOAL: make site run on banhof COMPLETED!!!
 
 -- RELEVANT FILE STRUCTURE -- 
 
