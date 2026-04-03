@@ -22,6 +22,10 @@ CONFIG_DIR="/etc/cv"
 NGINX_SITE="/etc/nginx/sites-available/cv"
 # ^ Where nginx looks for site configs
 
+LOG_FILE="/etc/logrotate.d/cv" 
+# ^ config file for logrotate 
+
+
 apt-get update 
 # ^ apt-get == CLI tool for the APT package manager 
 # ^ APT == remote server and we are updating our cashe of available pkgs and versio
@@ -158,6 +162,35 @@ dpkg -i /tmp/cloudflared.deb
 
 rm /tmp/cloudflared.deb
 # ^ we've installed, now free the RAM (very important in trixie)
+
+cat > $LOG_FILE << ILOVEME
+# 🪵🔄️
+# When services starts, they will begin to produce logs. Logrotate defines \
+# how these logs are managed. 
+# This needs to be AFTER install of -whatever we are logging- and BEFORE \
+# systemctl restart - it's important habit to define what happens to logs before\
+# the services produces them. 
+
+/var/log/nginx/*.log {
+    daily
+     # do this daily
+    rotate 7 
+     # delete log entries / files after day 7
+    compress
+     # compress files every day
+    missingok
+     # if there is a logfile missing: don't throw an error
+    notifempty
+     # if the logs are empty, no need to rotate/MANAGE them as defined here
+}
+/var/log/php8.2-fpm.log {
+    daily
+    rotate 7 
+    compress
+    missingok
+    notifempty
+}
+ILOVEME
 
 systemctl restart php*-fpm
 # ^ systemctl interacts with systemd
