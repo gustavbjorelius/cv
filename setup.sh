@@ -44,9 +44,20 @@ echo "=== Deploying to FHS Standard Paths"
 mkdir -p $WEB_ROOT
 # ^ -p == no error if path extant + create nesessary parent dir 
 
-cp -r *.php *.css *.js $WEB_ROOT/ 
-# ^ copy all .php .css .js files from current dir into web root
+cp -r ~/cv/public/. $WEB_ROOT/
+# separation of concern - what is in the public dir is what can go online, the \
+# other files in the cv dir like README and setup.sh stays out
+# Something I don't understand is the flow chart between this and sites-available
+# for this to work, you ovb. need to make these changes in the dev env
+
+# cp -r ~/cv/*.php ~/cv/*.css ~/cv/*.js $WEB_ROOT/ 
+# this is not future proof--what about when you add a .jpg in the future? 
+# ^ copy all .php .css .js files from ~/cv -> web root 
 # ^ -r includes nested files (from where we copy files)
+# ^ the ~/cv/ is from where the git pull will put cv in as we'll by default spawn \
+# ^ in to ~/
+# ^ we select a limited number of  file-types to put into web root - we don't want\
+# ^ to put README and this setup script into it 
 
 chown -R www-data:www-data $WEB_ROOT
 # ^ www-data is a restricted user created specifically for nginx/PHP-FPM
