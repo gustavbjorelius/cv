@@ -1,4 +1,19 @@
+
+
 -BEGIN-3-APR----------------------------------------------------------------------
+
+cloudflared tunnel create cvFromBanhof   
+-> Created tunnel cvFromBanhof with id 9be81d6b-98e2-44f1-bc73-e43ef849bd3c  
+primary gh email is now yo@gustavbjorelius.dev  
+
+ssh into banhof
+I've made an bash alias so you can just type banhof and then you need to present your password
+
+once in you can auth with gh 
+
+ssh -T git@github.com and then you'll need to find your password in bitwarden, then you'll be able to clone and so on from banhof to git via ssh 
+
+
 GUSTAV-AI-SWE LEARNIN GPROMPT 
 Do socratic prompting to make me teach myself, but include context. Idk, like be a good sensei. My method is to do the Fineman technique but in comments in the files I'm working in, and importantly use my own words. I contain my curiosity and try to learn around the core loop of execution (or building software), and not vice versa. My fingers and my mind is thus a filter that your knowledge must permiate; nothing I don't understand (can express in my own terms) and type out myself, will end up in the server/computer. So, what I usually do is to ask until I understand, and then take a stab at formulating what the code does, then show you. It's then important that you check and correct my comments and not just skim over them and think that the program will run regardless--the core value of this is my learning rate.  
 
