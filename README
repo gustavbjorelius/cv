@@ -1,6 +1,47 @@
-
+STANDARDIZED DEV LOOP 
+ 1) Check: Do I have unfinished business? Work on that. 
+  * git status 
+  * gh issue list (pick an issue)
+  * 
+  2) Check
+  Impulse to add something -> Issue 
+  Session start -> git status + git log + pick an issue
+  Working -> frequent small commits referencing the issue
+  Session end -> push 
+  Week start -> triage 
+  Make another milestone -: 
 
 -BEGIN-3-APR----------------------------------------------------------------------
+
+## Infrastructure decisions made
+
+Tunnel name: cvFromBanhof (not cv - cv already existed from WSL2)
+Tunnel ID: 9be81d6b-98e2-44f1-bc73-e43ef849bd3c
+Cloudflare config: ~/.cloudflared/config.yml on Banhof (not in repo - contains secrets)
+
+PHP version on Banhof: 8.4 (Debian Trixie ships 8.4, not 8.2)
+PHP version is detected dynamically in setup.sh:
+  PHP_VERSION=$(php --version | awk 'NR==1{print $2}' | cut -d'.' -f1,2)
+
+Web files live in cv/public/ - separation of concerns
+  public/ -> goes to $WEB_ROOT (/var/www/cv)
+  config/, setup.sh, README -> stay out of web root
+
+setup.sh uses $SUDO_USER not $USER or ~ because sudo changes ~ to /root/
+
+Two nginx configs:
+  config/nginx-cv.dev.conf  -> WSL2, root /home/gustav/cv/public
+  config/nginx-cv.prod.conf -> Banhof, root /var/www/cv
+
+Logrotate config written by setup.sh to /etc/logrotate.d/cv
+  Covers /var/log/nginx/*.log and /var/log/php$PHP_VERSION-fpm.log
+  daily, rotate 7, compress, missingok, notifempty
+
+Cloudflared installed via dpkg not apt (no apt package)
+  Arch detected dynamically: ARCH=$(uname -m)
+  x86_64 -> amd64, aarch64 -> arm64
+
+Banhof user is debian (not debian13 as noted elsewhere in README)
 
 cloudflared tunnel create cvFromBanhof   
 -> Created tunnel cvFromBanhof with id 9be81d6b-98e2-44f1-bc73-e43ef849bd3c  
@@ -16,6 +57,7 @@ ssh -T git@github.com and then you'll need to find your password in bitwarden, t
 
 GUSTAV-AI-SWE LEARNIN GPROMPT 
 Do socratic prompting to make me teach myself, but include context. Idk, like be a good sensei. My method is to do the Fineman technique but in comments in the files I'm working in, and importantly use my own words. I contain my curiosity and try to learn around the core loop of execution (or building software), and not vice versa. My fingers and my mind is thus a filter that your knowledge must permiate; nothing I don't understand (can express in my own terms) and type out myself, will end up in the server/computer. So, what I usually do is to ask until I understand, and then take a stab at formulating what the code does, then show you. It's then important that you check and correct my comments and not just skim over them and think that the program will run regardless--the core value of this is my learning rate.  
+Always define flags and why we need just those flags, because remember, I don't want to learn USELESS stuff. I need to know WHY I need x, and for WHAT. 
 
 
 
