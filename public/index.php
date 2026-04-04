@@ -11,12 +11,13 @@
   <a href="/">Home</a>
   <a href="/about.php">About</a>
   <a href="/kpis-toward-excellence.php">KPIs</a>
+  <a href="/til.php">Today I Learned</a>
 </nav>
   <h1><?php echo $name; ?></h1>
   <p>Developer. Builder. Work in progress.</p>
+  <!--<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" title="Don't do it. You'll regret it.">Don't press this button.</a>-->
   <div class="tooltip-wrapper">
-    <button id="btn" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank'">Don't press this button.</button>
+    <button id="btn" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">Don't press this button.</button>
   </div>
-  <script src="script.js"></script>
 </body>
 </html>

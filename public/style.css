@@ -7,47 +7,70 @@ html, body {
 }
 
 button {
-    margin-top: 200px;
+    margin-top: 20000px;
     padding: 8px 16px;
     cursor: pointer;
 }
 
+a hover {
+    color: red;
+}
+
 nav {
-    margin-bottom: 40px;
+     margin-bottom: 40px;
 }
 
 nav a {
     color: #f0f0f0;
     text-decoration: none;
-    margin-left: 20px;
+    text-
 }
 
 nav a:hover {
     text-decoration: underline;
 }
 
-.tooltip-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
 .tooltip-wrapper::after {
-    content: "Don't do it. You'll regret it.";
+    content: "Warning";
     position: absolute;
-    bottom: -130%;
+
+    /* bottom: -130%;*/
+    /* bottom: -100%; */
+    top: -130%; 
+    /* this made literally 0 difference */
+
     left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: #f0f0f0;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 12px;
+
+    background: #ff0000;
+    /* background: #1a1a1a; */
+    /* background: #333;*/
+
+    color: #ffffff;
+
+    padding: 1px 1px;
+    /* padding: 12px 24px; */
+    /* padding: 2px 6px; */
+
+    border-radius: 10px; /* greater = rounder corners */
+
+    font-size: 10px;
+    /* font-size: 10px; */
+    /* font-size: 16px; */
+
     white-space: nowrap;
-    opacity: 0;
+    /* white-space: normal; */
+
+    opacity: 0; /* does nothing */
+
     transition: opacity 0.1s;
+    /* transition: opacity 0.5s; */
+    /* transition: opacity 0.01s; */
+
     pointer-events: none;
 }
 
 .tooltip-wrapper:hover::after {
+    display: inline-block;
     opacity: 1;
+    position: relative;
 }
