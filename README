@@ -1,4 +1,38 @@
-STANDARDIZED DEV LOOP 
+
+
+
+-BEGIN-4-apr------------------------------------------------------------------
+## Pipe tools for extracting version strings
+php --version | awk 'NR==1{print $2}' | cut -d'.' -f1,2
+ - awk 'NR==1{print $2}' == take first line, print second word
+ - cut -d'.' == split on dots
+ - -f1,2 == take fields 1 and 2 (e.g. 8.4.16 -> 8.4)
+ - pattern reusable for any versioned CLI tool
+
+## Detecting system info dynamically in bash
+uname -m -> returns cpu architecture (x86_64 == amd64, aarch64 == arm64)
+$SUDO_USER -> the user who called sudo (not root, which is what $USER returns under sudo)
+~ expands to /root/ under sudo, not /home/youruser - always use absolute paths in sudo scripts
+
+## heredoc - write multi-line content to a file from bash
+cat > /path/to/file << EOF
+content
+EOF
+ - EOF is just a convention, any word works as delimiter
+ - used in setup.sh to write logrotate config to /etc/logrotate.d/cv
+
+## dpkg vs apt-get
+dpkg -i file.deb == install a local .deb directly, no internet, no dep resolution
+apt-get install == fetches from internet, resolves dependencies
+ - if dpkg fails on missing deps: sudo apt install -f fixes it
+
+## gh CLI - milestone management
+gh api repos/{owner}/{repo}/milestones -f title="name" -f description="desc"
+gh api repos/{owner}/{repo}/milestones/{number} -X PATCH -f state=closed
+ - -X PATCH == HTTP method (default is GET, use PATCH to update)
+ - must include full repo path owner/repo or get 404
+
+# STANDARDIZED DEV LOOP 
  1) Check: Do I have unfinished business? Work on that. 
   * git status 
   * gh issue list (pick an issue)
